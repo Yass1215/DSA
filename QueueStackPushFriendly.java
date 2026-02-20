@@ -1,51 +1,51 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
-package DSA;
-import java.util.LinkedList;
+import java.util.ArrayDeque;
+import java.util.NoSuchElementException;
 import java.util.Queue;
 
-public class QueueStackPushFriendly {
-    Queue<Integer> q1 = new LinkedList<>();
-    Queue<Integer> q2 = new LinkedList<>();
+/**
+ * Push-friendly Stack using two Queues.
+ */
+public class QueueStackPushFriendly<T> {
+    private final Queue<T> q1 = new ArrayDeque<>();
+    private final Queue<T> q2 = new ArrayDeque<>();
 
-    // Push operation – easy
-    void push(int x) {
-        q1.add(x); // just add to q1
+    public void push(T x) {
+        q1.add(x);
     }
 
-    // Pop operation – a bit slower
-    int pop() {
-        if (q1.isEmpty()) {
-            System.out.println("Stack is empty");
-            return -1;
-        }
-
-        // Move all elements except last to q2
-        while (q1.size() > 1) {
-            q2.add(q1.remove());
-        }
-
-        int popped = q1.remove(); // last element is popped
-
-        // Swap q1 and q2
-        Queue<Integer> temp = q1;
-        q1 = q2;
-        q2 = temp;
-
-        return popped;
+    public T pop() {
+        if (isEmpty()) throw new NoSuchElementException("Stack is empty");
+        moveExceptLast(q1, q2);
+        T removed = q1.remove();      // last pushed element
+        swapQueues();
+        return removed;
     }
 
-    
-    public static void main(String[] args) {
-        QueueStackPushFriendly stack = new QueueStackPushFriendly();
-        stack.push(10);
-        stack.push(20);
-        stack.push(30);
-
-        System.out.println(stack.pop()); // 30
-        System.out.println(stack.pop()); // 20
+    public T peek() {
+        if (isEmpty()) throw new NoSuchElementException("Stack is empty");
+        moveExceptLast(q1, q2);
+        T top = q1.remove();
+        q2.add(top);
+        swapQueues();
+        return top;
     }
-    
+
+    public boolean isEmpty() {
+        return q1.isEmpty();
+    }
+
+    public int size() {
+        return q1.size();
+    }
+
+    private void moveExceptLast(Queue<T> from, Queue<T> to) {
+        while (from.size() > 1) to.add(from.remove());
+    }
+
+    private void swapQueues() {
+        // swap contents 
+        Queue<T> tmp = new ArrayDeque<>(q1);
+        q1.clear(); q1.addAll(q2);
+        q2.clear(); q2.addAll(tmp);
+    }
 }
