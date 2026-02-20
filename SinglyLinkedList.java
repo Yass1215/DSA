@@ -1,56 +1,78 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
-package DSA;
+import java.util.NoSuchElementException;
 
-class SinglyLinkedList {
-
-    class Node {
-        int data;
-        Node next;
-
-        Node(int data) {
-            this.data = data;
-            this.next = null;
-        }
+public class SinglyLinkedList<T> {
+    private static class Node<T> {
+        T data; Node<T> next;
+        Node(T data) { this.data = data; }
     }
 
-    Node head;
+    private Node<T> head;
+    private Node<T> tail;
+    private int size = 0;
 
-    // Insert at end
-    void insert(int data) {
-        Node newNode = new Node(data);
-
-        if (head == null) {
-            head = newNode;
-            return;
-        }
-
-        Node temp = head;
-        while (temp.next != null) {
-            temp = temp.next;
-        }
-        temp.next = newNode;
+    public void addFirst(T x) {
+        Node<T> n = new Node<>(x);
+        n.next = head;
+        head = n;
+        if (tail == null) tail = head;
+        size++;
     }
 
-    // Display list
-    void display() {
-        Node temp = head;
-        while (temp != null) {
-            System.out.print(temp.data + " -> ");
-            temp = temp.next;
+    public void addLast(T x) {
+        Node<T> n = new Node<>(x);
+        if (tail == null) {
+            head = tail = n;
+        } else {
+            tail.next = n;
+            tail = n;
         }
-        System.out.println("null");
+        size++;
     }
 
-    public static void main(String[] args) {
-        SinglyLinkedList list = new SinglyLinkedList();
-
-        list.insert(10);
-        list.insert(20);
-        list.insert(30);
-
-        list.display();
+    public T removeFirst() {
+        if (isEmpty()) throw new NoSuchElementException("List is empty");
+        T val = head.data;
+        head = head.next;
+        if (head == null) tail = null;
+        size--;
+        return val;
     }
+
+    public boolean remove(T x) {
+        Node<T> prev = null, cur = head;
+        while (cur != null) {
+            if ((x == null && cur.data == null) || (x != null && x.equals(cur.data))) {
+                if (prev == null) head = cur.next;
+                else prev.next = cur.next;
+                if (cur == tail) tail = prev;
+                size--;
+                return true;
+            }
+            prev = cur;
+            cur = cur.next;
+        }
+        return false;
+    }
+
+    public boolean contains(T x) {
+        Node<T> cur = head;
+        while (cur != null) {
+            if ((x == null && cur.data == null) || (x != null && x.equals(cur.data))) return true;
+            cur = cur.next;
+        }
+        return false;
+    }
+
+    public T getFirst() {
+        if (isEmpty()) throw new NoSuchElementException("List is empty");
+        return head.data;
+    }
+
+    public T getLast() {
+        if (isEmpty()) throw new NoSuchElementException("List is empty");
+        return tail.data;
+    }
+
+    public int size() { return size; }
+    public boolean isEmpty() { return size == 0; }
 }
