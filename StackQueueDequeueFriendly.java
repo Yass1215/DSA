@@ -1,50 +1,41 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
-package DSA;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.NoSuchElementException;
 
-import java.util.Stack;
+/**
+ * Dequeue-friendly Queue using two stacks (classic).
+ * */
+public class StackQueueDequeueFriendly<T> {
+    private final Deque<T> in  = new ArrayDeque<>();
+    private final Deque<T> out = new ArrayDeque<>();
 
-class StackQueueDequeueFriendly {
-
-    Stack<Integer> stack1 = new Stack<>();
-    Stack<Integer> stack2 = new Stack<>();
-
-    // Enqueue operation (costly)
-    void enqueue(int x) {
-        // Move all elements from stack1 to stack2
-        while (!stack1.isEmpty()) {
-            stack2.push(stack1.pop());
-        }
-
-        // Push new element into stack1
-        stack1.push(x);
-
-        // Move everything back to stack1
-        while (!stack2.isEmpty()) {
-            stack1.push(stack2.pop());
-        }
+    public void enqueue(T x) {
+        in.push(x);
     }
 
-    // Dequeue operation (easy)
-    int dequeue() {
-        if (stack1.isEmpty()) {
-            System.out.println("Queue is empty");
-            return -1;
-        }
-        return stack1.pop();
+    public T dequeue() {
+        if (isEmpty()) throw new NoSuchElementException("Queue is empty");
+        shiftIfNeeded();
+        return out.pop();
     }
 
-    public static void main(String[] args) {
-        StackQueueDequeueFriendly q = new StackQueueDequeueFriendly();
+    public T peek() {
+        if (isEmpty()) throw new NoSuchElementException("Queue is empty");
+        shiftIfNeeded();
+        return out.peek();
+    }
 
-        q.enqueue(10);
-        q.enqueue(20);
-        q.enqueue(30);
+    public boolean isEmpty() {
+        return in.isEmpty() && out.isEmpty();
+    }
 
-        System.out.println(q.dequeue()); // 10
-        System.out.println(q.dequeue()); // 20
+    public int size() {
+        return in.size() + out.size();
+    }
+
+    private void shiftIfNeeded() {
+        if (out.isEmpty()) {
+            while (!in.isEmpty()) out.push(in.pop());
+        }
     }
 }
-
