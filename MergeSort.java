@@ -1,56 +1,23 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
-package DSA;
-
-class MergeSort {
-
-    static void merge(int[] arr, int left, int mid, int right) {
-        int n1 = mid - left + 1;
-        int n2 = right - mid;
-
-        int[] L = new int[n1];
-        int[] R = new int[n2];
-
-        for (int i = 0; i < n1; i++)
-            L[i] = arr[left + i];
-        for (int j = 0; j < n2; j++)
-            R[j] = arr[mid + 1 + j];
-
-        int i = 0, j = 0, k = left;
-
-        while (i < n1 && j < n2) {
-            if (L[i] <= R[j])
-                arr[k++] = L[i++];
-            else
-                arr[k++] = R[j++];
-        }
-
-        while (i < n1)
-            arr[k++] = L[i++];
-
-        while (j < n2)
-            arr[k++] = R[j++];
+public class MergeSort {
+    public static void mergeSort(int[] a) {
+        if (a == null || a.length <= 1) return;
+        int[] tmp = new int[a.length];
+        mergeSort(a, 0, a.length - 1, tmp);
     }
 
-    static void mergeSort(int[] arr, int left, int right) {
-        if (left < right) {
-            int mid = (left + right) / 2;
-
-            mergeSort(arr, left, mid);
-            mergeSort(arr, mid + 1, right);
-
-            merge(arr, left, mid, right);
-        }
+    private static void mergeSort(int[] a, int l, int r, int[] tmp) {
+        if (l >= r) return;
+        int m = l + (r - l) / 2;
+        mergeSort(a, l, m, tmp);
+        mergeSort(a, m + 1, r, tmp);
+        merge(a, l, m, r, tmp);
     }
 
-    public static void main(String[] args) {
-        int[] arr = {12, 11, 13, 5, 6, 7};
-
-        mergeSort(arr, 0, arr.length - 1);
-
-        for (int x : arr)
-            System.out.print(x + " ");
+    private static void merge(int[] a, int l, int m, int r, int[] tmp) {
+        int i = l, j = m + 1, k = 0;
+        while (i <= m && j <= r) tmp[k++] = (a[i] <= a[j]) ? a[i++] : a[j++];
+        while (i <= m) tmp[k++] = a[i++];
+        while (j <= r) tmp[k++] = a[j++];
+        System.arraycopy(tmp, 0, a, l, k);
     }
 }
