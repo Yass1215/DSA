@@ -1,75 +1,35 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
-package DSA;
+import java.util.NoSuchElementException;
 
-/**
- *
- * @author DELL
- */
-class LinkedListFIFOQueue {
+public class LinkedListFIFOQueue<T> {
+    private static class Node<T> { T data; Node<T> next; Node(T d){data=d;} }
+    private Node<T> front, rear;
+    private int size = 0;
 
-    class Node {
-        int data;
-        Node next;
-
-        Node(int data) {
-            this.data = data;
-        }
-    }
-
-    Node front = null, rear = null;
-
-    // Enqueue
-    void enqueue(int data) {
-        Node newNode = new Node(data);
-
+    public void enqueue(T x) {
+        Node<T> n = new Node<>(x);
         if (rear == null) {
-            front = rear = newNode;
-            return;
+            front = rear = n;
+        } else {
+            rear.next = n;
+            rear = n;
         }
-
-        rear.next = newNode;
-        rear = newNode;
+        size++;
     }
 
-    // Dequeue
-    int dequeue() {
-        if (front == null) {
-            System.out.println("Queue is Empty");
-            return -1;
-        }
-
-        int value = front.data;
+    public T dequeue() {
+        if (isEmpty()) throw new NoSuchElementException("Queue is empty");
+        T val = front.data;
         front = front.next;
-
-        if (front == null)
-            rear = null;
-
-        return value;
+        if (front == null) rear = null;
+        size--;
+        return val;
     }
 
-    // Display
-    void display() {
-        Node temp = front;
-        while (temp != null) {
-            System.out.print(temp.data + " -> ");
-            temp = temp.next;
-        }
-        System.out.println("null");
+    public T peek() {
+        if (isEmpty()) throw new NoSuchElementException("Queue is empty");
+        return front.data;
     }
 
-    public static void main(String[] args) {
-        LinkedListFIFOQueue q = new LinkedListFIFOQueue();
-
-        q.enqueue(10);
-        q.enqueue(20);
-        q.enqueue(30);
-
-        q.display();
-        System.out.println("Dequeued: " + q.dequeue());
-    }
+    public boolean isEmpty() { return size == 0; }
+    public int size() { return size; }
 }
-
-    
