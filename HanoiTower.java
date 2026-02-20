@@ -1,28 +1,24 @@
+import java.util.Scanner;
 
-package DSA;
-
+/**
+ * Tower of Hanoi recursion:
+ * Move (n-1) source->aux, move n source->dest, move (n-1) aux->dest.
+ */
 public class HanoiTower {
-
-    static void hanoi(int n, char from, char to, char aux) {
-        // Base case
+    public static void hanoi(int n, char source, char aux, char dest) {
         if (n == 1) {
-            System.out.println("Move disk 1 from " + from + " to " + to);
+            System.out.println(source + " -> " + dest);
             return;
         }
-
-        // Move n-1 disks to auxiliary rod
-        hanoi(n - 1, from, aux, to);
-
-        // Move nth disk
-        System.out.println("Move disk " + n + " from " + from + " to " + to);
-
-        // Move n-1 disks from auxiliary to destination
-        hanoi(n - 1, aux, to, from);
+        hanoi(n - 1, source, dest, aux);
+        System.out.println(source + " -> " + dest);
+        hanoi(n - 1, aux, source, dest);
     }
 
     public static void main(String[] args) {
-        int n = 3;
-        hanoi(n, 'A', 'C', 'B');
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter number of disks: ");
+        int n = sc.nextInt();
+        hanoi(n, 'A', 'B', 'C');
     }
-    
 }
