@@ -1,36 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
-package DSA;
-
-class SelectionSort {
-
-    static void selectionSort(int[] arr) {
-        int n = arr.length;
-
-        for (int i = 0; i < n - 1; i++) {
-            int minIndex = i;
-
-            for (int j = i + 1; j < n; j++) {
-                if (arr[j] < arr[minIndex]) {
-                    minIndex = j;
-                }
+public class SelectionSort {
+    public static void selectionSort(int[] a) {
+        for (int i = 0; i < a.length - 1; i++) {
+            int min = i;
+            for (int j = i + 1; j < a.length; j++) {
+                if (a[j] < a[min]) min = j;
             }
-
-            // Swap
-            int temp = arr[minIndex];
-            arr[minIndex] = arr[i];
-            arr[i] = temp;
+            int tmp = a[i]; a[i] = a[min]; a[min] = tmp;
         }
-    }
-
-    public static void main(String[] args) {
-        int[] arr = {64, 25, 12, 22, 11};
-
-        selectionSort(arr);
-
-        for (int x : arr)
-            System.out.print(x + " ");
     }
 }
