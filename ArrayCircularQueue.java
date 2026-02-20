@@ -1,60 +1,43 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
+import java.util.NoSuchElementException;
+
+/**
+ * Fixed-size circular queue using array.
  */
-package DSA;
+public class ArrayCircularQueue<T> {
+    private final Object[] a;
+    private int front = 0;
+    private int size = 0;
 
-class ArrayCircularQueue {
-
-    int[] queue;
-    int front = -1, rear = -1;
-    int size;
-
-    ArrayCircularQueue(int size) {
-        this.size = size;
-        queue = new int[size];
+    public ArrayCircularQueue(int capacity) {
+        if (capacity <= 0) throw new IllegalArgumentException("capacity must be > 0");
+        a = new Object[capacity];
     }
 
-    // Enqueue
-    void enqueue(int data) {
-        if ((rear + 1) % size == front) {
-            System.out.println("Queue is Full");
-            return;
-        }
-
-        if (front == -1) front = 0;
-
-        rear = (rear + 1) % size;
-        queue[rear] = data;
+    public void enqueue(T x) {
+        if (isFull()) throw new IllegalStateException("Queue is full");
+        int rearIndex = (front + size) % a.length;
+        a[rearIndex] = x;
+        size++;
     }
 
-    // Dequeue
-    int dequeue() {
-        if (front == -1) {
-            System.out.println("Queue is Empty");
-            return -1;
-        }
-
-        int value = queue[front];
-
-        if (front == rear) {
-            front = rear = -1; // reset
-        } else {
-            front = (front + 1) % size;
-        }
-
-        return value;
+    @SuppressWarnings("unchecked")
+    public T dequeue() {
+        if (isEmpty()) throw new NoSuchElementException("Queue is empty");
+        T val = (T) a[front];
+        a[front] = null;
+        front = (front + 1) % a.length;
+        size--;
+        return val;
     }
 
-    public static void main(String[] args) {
-        ArrayCircularQueue cq = new ArrayCircularQueue(5);
-
-        cq.enqueue(10);
-        cq.enqueue(20);
-        cq.enqueue(30);
-
-        System.out.println(cq.dequeue()); // 10
-        System.out.println(cq.dequeue()); // 20
+    @SuppressWarnings("unchecked")
+    public T peek() {
+        if (isEmpty()) throw new NoSuchElementException("Queue is empty");
+        return (T) a[front];
     }
+
+    public boolean isEmpty() { return size == 0; }
+    public boolean isFull() { return size == a.length; }
+    public int size() { return size; }
+    public int capacity() { return a.length; }
 }
-
