@@ -14,6 +14,7 @@ public class SequencedCollectionAc {
         sc.addFirst(5);
         sc.addFirst(2);
         sc.addLast(3);
+        sc.addLast(4);
         System.out.println(sc.getFirst());
         System.out.println(sc.removeLast());
         System.out.println((sc));
@@ -25,3 +26,4 @@ public class SequencedCollectionAc {
     }
     
 }
+
