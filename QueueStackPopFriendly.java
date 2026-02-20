@@ -1,40 +1,36 @@
-
-package DSA;
-import java.util.LinkedList;
+import java.util.ArrayDeque;
+import java.util.NoSuchElementException;
 import java.util.Queue;
 
-public class QueueStackPopFriendly {
-    Queue<Integer> q = new LinkedList<>();
+/**
+ * Pop-friendly Stack using two Queues.
+ */
+public class QueueStackPopFriendly<T> {
+    private final Queue<T> main = new ArrayDeque<>();
+    private final Queue<T> aux  = new ArrayDeque<>();
 
-    // Push operation – a bit slower
-    void push(int x) {
-        q.add(x); // add element
-        int size = q.size();
-        // Rotate elements to move new element to front
-        for (int i = 0; i < size - 1; i++) {
-            q.add(q.remove());
-        }
+    public void push(T x) {
+        aux.add(x);
+        while (!main.isEmpty()) aux.add(main.remove());
+        // swap main and aux by moving back
+        while (!aux.isEmpty()) main.add(aux.remove());
     }
 
-    // Pop operation – easy
-    int pop() {
-        if (q.isEmpty()) {
-            System.out.println("Stack is empty");
-            return -1;
-        }
-        return q.remove(); // first element is top
+    public T pop() {
+        if (isEmpty()) throw new NoSuchElementException("Stack is empty");
+        return main.remove();
     }
 
-    public static void main(String[] args) {
-        QueueStackPopFriendly stack = new QueueStackPopFriendly();
-        stack.push(10);
-        stack.push(20);
-        stack.push(30);
-
-        System.out.println(stack.pop()); // 30
-        System.out.println(stack.pop()); // 20
-    
+    public T peek() {
+        if (isEmpty()) throw new NoSuchElementException("Stack is empty");
+        return main.element();
     }
-    
+
+    public boolean isEmpty() {
+        return main.isEmpty();
+    }
+
+    public int size() {
+        return main.size();
+    }
 }
-
