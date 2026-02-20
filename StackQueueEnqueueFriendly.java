@@ -1,42 +1,40 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
-package DSA;
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.NoSuchElementException;
+import java.util.Deque;
 
-public class StackQueueEnqueueFriendly {
+/**
+ * Enqueue-friendly Queue using two Stacks.
+ **/
+public class StackQueueEnqueueFriendly<T> {
+    private final Deque<T> main = new ArrayDeque<>();
+    private final Deque<T> aux  = new ArrayDeque<>();
 
-    Stack<Integer> s1 = new Stack<>();
-    Stack<Integer> s2 = new Stack<>();
-
-    // Enqueue operation – easy
-    void enqueue(int x) {
-        s1.push(x); // push into s1
+    public void enqueue(T x) {
+        main.push(x);
     }
 
-    // Dequeue operation – a bit slower
-    int dequeue() {
-        if (s2.isEmpty()) {
-            while (!s1.isEmpty()) {
-                s2.push(s1.pop()); // move elements from s1 to s2
-            }
-        }
-        if (s2.isEmpty()) {
-            System.out.println("Queue is empty");
-            return -1;
-        }
-        return s2.pop();
+    public T dequeue() {
+        if (isEmpty()) throw new NoSuchElementException("Queue is empty");
+        while (main.size() > 1) aux.push(main.pop());
+        T front = main.pop();               // oldest item
+        while (!aux.isEmpty()) main.push(aux.pop());
+        return front;
     }
-    
-    public static void main(String[] args) {
-        StackQueueEnqueueFriendly queue = new StackQueueEnqueueFriendly();
-        queue.enqueue(10);
-        queue.enqueue(20);
-        queue.enqueue(30);
 
-        System.out.println(queue.dequeue()); // 10
-        System.out.println(queue.dequeue()); // 20
+    public T peek() {
+        if (isEmpty()) throw new NoSuchElementException("Queue is empty");
+        while (main.size() > 1) aux.push(main.pop());
+        T front = main.pop();
+        aux.push(front);
+        while (!aux.isEmpty()) main.push(aux.pop());
+        return front;
     }
-    
+
+    public boolean isEmpty() {
+        return main.isEmpty();
+    }
+
+    public int size() {
+        return main.size();
+    }
 }
