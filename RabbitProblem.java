@@ -1,31 +1,18 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
-package DSA;
+import java.util.Scanner;
 
 /**
- *
- * @author DELL
- */
+ * Rabbit Problem -> Fibonacci recursion.
+ **/
 public class RabbitProblem {
-
-
-
-    static int rabbits(int n) {
-        // Base cases (as per PDF)
-        if (n == 0) return 1; // 1 baby pair
-        if (n == 1) return 1;
-
-        // Recursive case
-        return rabbits(n - 1) + rabbits(n - 2);
+    public static long fibonacciRabbits(int month) {
+        if (month <= 1) return month;
+        return fibonacciRabbits(month - 1) + fibonacciRabbits(month - 2);
     }
 
     public static void main(String[] args) {
-        int months = 12;
-        System.out.println("Rabbit pairs after " + months + " months = " + rabbits(months));
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter month n (e.g., 12 for 1 year): ");
+        int n = sc.nextInt();
+        System.out.println("Rabbit pairs after month " + n + " = " + fibonacciRabbits(n));
     }
 }
-
-    
-
