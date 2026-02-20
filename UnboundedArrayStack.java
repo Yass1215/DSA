@@ -1,51 +1,51 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
-package DSA;
-import java.util.Arrays;
+import java.util.NoSuchElementException;
 
-public class UnboundedArrayStack {
-    private int[] arr;
-    private int top;
+/**
+ * Unbounded (dynamic) array stack.
+ * - grows when full
+ * - shrinks when usage is low (but never below 2)
+ */
+public class UnboundedArrayStack<T> {
+    private Object[] a;
+    private int top; // points to next free index
 
     public UnboundedArrayStack() {
-        arr = new int[2]; // start with small size
-        top = -1;
+        this.a = new Object[2];
+        this.top = 0;
     }
 
-    // Push operation
-    void push(int x) {
-        if (top == arr.length - 1) {
-            // double the size
-            arr = Arrays.copyOf(arr, arr.length * 2);
-        }
-        arr[++top] = x;
+    public void push(T x) {
+        if (top == a.length) resize(a.length * 2);
+        a[top++] = x;
     }
 
-    // Pop operation
-    int pop() {
-        if (top == -1) {
-            System.out.println("Stack is empty");
-            return -1;
-        }
-        int popped = arr[top--];
-        if (top + 1 <= arr.length / 4 && arr.length > 2) {
-            // shrink array
-            arr = Arrays.copyOf(arr, arr.length / 2);
-        }
-        return popped;
+    @SuppressWarnings("unchecked")
+    public T pop() {
+        if (isEmpty()) throw new NoSuchElementException("Stack is empty");
+        T val = (T) a[--top];
+        a[top] = null;
+
+        if (a.length > 2 && top <= a.length / 4) resize(a.length / 2);
+        return val;
     }
 
-    public static void main(String[] args) {
-        UnboundedArrayStack stack = new UnboundedArrayStack();
-        stack.push(10);
-        stack.push(20);
-        stack.push(30);
-        stack.push(40);
-
-        System.out.println(stack.pop()); // 40
-        System.out.println(stack.pop()); // 30
+    @SuppressWarnings("unchecked")
+    public T peek() {
+        if (isEmpty()) throw new NoSuchElementException("Stack is empty");
+        return (T) a[top - 1];
     }
-    
+
+    public boolean isEmpty() {
+        return top == 0;
+    }
+
+    public int size() {
+        return top;
+    }
+
+    private void resize(int newCap) {
+        Object[] b = new Object[newCap];
+        System.arraycopy(a, 0, b, 0, top);
+        a = b;
+    }
 }
