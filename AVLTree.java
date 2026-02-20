@@ -1,114 +1,144 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * AVL: balance factor = height(left) - height(right) must be in [-1,0,1].
  */
-package DSA;
-
-class AVLTree {
-
-    class Node {
-        int data, height;
+public class AVLTree {
+    static class Node {
+        int key;
         Node left, right;
-
-        Node(int data) {
-            this.data = data;
-            height = 1;
-        }
+        int height; // height of node
+        Node(int key) { this.key = key; this.height = 1; }
     }
 
-    Node root;
+    private Node root;
 
-    int height(Node n) {
+    public void insert(int key) {
+        root = insert(root, key);
+    }
+
+    public void delete(int key) {
+        root = delete(root, key);
+    }
+
+    public boolean contains(int key) {
+        Node cur = root;
+        while (cur != null) {
+            if (key < cur.key) cur = cur.left;
+            else if (key > cur.key) cur = cur.right;
+            else return true;
+        }
+        return false;
+    }
+
+    public List<Integer> inorder() {
+        List<Integer> res = new ArrayList<>();
+        inorder(root, res);
+        return res;
+    }
+
+    private void inorder(Node n, List<Integer> res) {
+        if (n == null) return;
+        inorder(n.left, res);
+        res.add(n.key);
+        inorder(n.right, res);
+    }
+
+    // ---------- internal helpers ----------
+    private Node insert(Node n, int key) {
+        if (n == null) return new Node(key);
+
+        if (key < n.key) n.left = insert(n.left, key);
+        else if (key > n.key) n.right = insert(n.right, key);
+        else return n; // no duplicates
+
+        updateHeight(n);
+        return rebalance(n);
+    }
+
+    private Node delete(Node n, int key) {
+        if (n == null) return null;
+
+        if (key < n.key) n.left = delete(n.left, key);
+        else if (key > n.key) n.right = delete(n.right, key);
+        else {
+            // node found
+            if (n.left == null || n.right == null) {
+                n = (n.left != null) ? n.left : n.right;
+            } else {
+                Node succ = minNode(n.right);
+                n.key = succ.key;
+                n.right = delete(n.right, succ.key);
+            }
+        }
+
+        if (n == null) return null;
+
+        updateHeight(n);
+        return rebalance(n);
+    }
+
+    private Node minNode(Node n) {
+        while (n.left != null) n = n.left;
+        return n;
+    }
+
+    private int height(Node n) {
         return (n == null) ? 0 : n.height;
     }
 
-    int getBalance(Node n) {
-        return (n == null) ? 0 : height(n.left) - height(n.right);
+    private void updateHeight(Node n) {
+        n.height = 1 + Math.max(height(n.left), height(n.right));
     }
 
-    Node rightRotate(Node y) {
+    private int balanceFactor(Node n) {
+        return height(n.left) - height(n.right);
+    }
+
+    private Node rebalance(Node n) {
+        int bf = balanceFactor(n);
+
+        // Left heavy
+        if (bf > 1) {
+            if (balanceFactor(n.left) < 0) {
+                n.left = rotateLeft(n.left);      // LR case
+            }
+            return rotateRight(n);                // LL case
+        }
+
+        // Right heavy
+        if (bf < -1) {
+            if (balanceFactor(n.right) > 0) {
+                n.right = rotateRight(n.right);   // RL case
+            }
+            return rotateLeft(n);                 // RR case
+        }
+
+        return n;
+    }
+
+    private Node rotateRight(Node y) {
         Node x = y.left;
-        Node T2 = x.right;
+        Node t2 = x.right;
 
         x.right = y;
-        y.left = T2;
+        y.left = t2;
 
-        y.height = Math.max(height(y.left), height(y.right)) + 1;
-        x.height = Math.max(height(x.left), height(x.right)) + 1;
-
+        updateHeight(y);
+        updateHeight(x);
         return x;
     }
 
-    Node leftRotate(Node x) {
+    private Node rotateLeft(Node x) {
         Node y = x.right;
-        Node T2 = y.left;
+        Node t2 = y.left;
 
         y.left = x;
-        x.right = T2;
+        x.right = t2;
 
-        x.height = Math.max(height(x.left), height(x.right)) + 1;
-        y.height = Math.max(height(y.left), height(y.right)) + 1;
-
+        updateHeight(x);
+        updateHeight(y);
         return y;
-    }
-
-    Node insert(Node node, int data) {
-
-        if (node == null)
-            return new Node(data);
-
-        if (data < node.data)
-            node.left = insert(node.left, data);
-        else if (data > node.data)
-            node.right = insert(node.right, data);
-        else
-            return node;
-
-        node.height = 1 + Math.max(height(node.left), height(node.right));
-
-        int balance = getBalance(node);
-
-        // LL
-        if (balance > 1 && data < node.left.data)
-            return rightRotate(node);
-
-        // RR
-        if (balance < -1 && data > node.right.data)
-            return leftRotate(node);
-
-        // LR
-        if (balance > 1 && data > node.left.data) {
-            node.left = leftRotate(node.left);
-            return rightRotate(node);
-        }
-
-        // RL
-        if (balance < -1 && data < node.right.data) {
-            node.right = rightRotate(node.right);
-            return leftRotate(node);
-        }
-
-        return node;
-    }
-
-    void inorder(Node node) {
-        if (node != null) {
-            inorder(node.left);
-            System.out.print(node.data + " ");
-            inorder(node.right);
-        }
-    }
-
-    public static void main(String[] args) {
-        AVLTree tree = new AVLTree();
-
-        tree.root = tree.insert(tree.root, 10);
-        tree.root = tree.insert(tree.root, 20);
-        tree.root = tree.insert(tree.root, 30);
-        tree.root = tree.insert(tree.root, 40);
-        tree.root = tree.insert(tree.root, 50);
-
-        System.out.print("Inorder Traversal: ");
-        tree.inorder(tree.root);
     }
 }
