@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * BST properties: left < node < right (no duplicates). :contentReference[oaicite:9]{index=9}
+ * BST properties: left < node < right (no duplicates). 
  */
 public class BinarySearchTree {
     static class Node {
@@ -70,3 +70,4 @@ public class BinarySearchTree {
         inorder(n.right, res);
     }
 }
+
