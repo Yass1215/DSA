@@ -1,41 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
-package DSA;
-
 public class OptimizedBubbleSort {
-
-    static void bubbleSort(int[] arr) {
-        int n = arr.length;
-        boolean swapped;
-
-        for (int i = 0; i < n - 1; i++) {
-            swapped = false;
-
-            for (int j = 0; j < n - i - 1; j++) {
-
-                if (arr[j] > arr[j + 1]) {
-                    int temp = arr[j];
-                    arr[j] = arr[j + 1];
-                    arr[j + 1] = temp;
+    public static void bubbleSortOptimized(int[] a) {
+        for (int i = 0; i < a.length - 1; i++) {
+            boolean swapped = false;
+            for (int j = 0; j < a.length - 1 - i; j++) {
+                if (a[j] > a[j + 1]) {
+                    int tmp = a[j]; a[j] = a[j + 1]; a[j + 1] = tmp;
                     swapped = true;
                 }
             }
-
-            // If no swap happened, array is sorted
-            if (!swapped)
-                break;
+            if (!swapped) return; // already sorted
         }
     }
-
-    public static void main(String[] args) {
-        int[] arr = {1, 2, 3, 4};
-
-        bubbleSort(arr);
-
-        for (int x : arr)
-            System.out.print(x + " ");
-    }
-    
 }
