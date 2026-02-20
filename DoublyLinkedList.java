@@ -1,58 +1,52 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
-package DSA;
+import java.util.NoSuchElementException;
 
-class DoublyLinkedList {
-
-    class Node {
-        int data;
-        Node prev, next;
-
-        Node(int data) {
-            this.data = data;
-        }
+public class DoublyLinkedList<T> {
+    private static class Node<T> {
+        T data; Node<T> prev, next;
+        Node(T data) { this.data = data; }
     }
 
-    Node head;
+    private Node<T> head, tail;
+    private int size = 0;
 
-    // Insert at end
-    void insert(int data) {
-        Node newNode = new Node(data);
-
-        if (head == null) {
-            head = newNode;
-            return;
-        }
-
-        Node temp = head;
-        while (temp.next != null) {
-            temp = temp.next;
-        }
-
-        temp.next = newNode;
-        newNode.prev = temp;
+    public void addFirst(T x) {
+        Node<T> n = new Node<>(x);
+        n.next = head;
+        if (head != null) head.prev = n;
+        head = n;
+        if (tail == null) tail = head;
+        size++;
     }
 
-    // Display forward
-    void displayForward() {
-        Node temp = head;
-        while (temp != null) {
-            System.out.print(temp.data + " <-> ");
-            temp = temp.next;
-        }
-        System.out.println("null");
+    public void addLast(T x) {
+        Node<T> n = new Node<>(x);
+        n.prev = tail;
+        if (tail != null) tail.next = n;
+        tail = n;
+        if (head == null) head = tail;
+        size++;
     }
 
-    public static void main(String[] args) {
-        DoublyLinkedList list = new DoublyLinkedList();
-
-        list.insert(10);
-        list.insert(20);
-        list.insert(30);
-
-        list.displayForward();
+    public T removeFirst() {
+        if (isEmpty()) throw new NoSuchElementException("List is empty");
+        T val = head.data;
+        head = head.next;
+        if (head != null) head.prev = null;
+        else tail = null;
+        size--;
+        return val;
     }
+
+    public T removeLast() {
+        if (isEmpty()) throw new NoSuchElementException("List is empty");
+        T val = tail.data;
+        tail = tail.prev;
+        if (tail != null) tail.next = null;
+        else head = null;
+        size--;
+        return val;
+    }
+
+    public int size() { return size; }
+    public boolean isEmpty() { return size == 0; }
 }
-
